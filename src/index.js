@@ -75,11 +75,28 @@ app.put("/todos/:id", checksExistsUserAccount, (request, response) => {
 });
 
 app.patch("/todos/:id/done", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { usernameExists } = request;
+  const { id } = request.params;
+
+  const doneUpdated = usernameExists.todos.find((done) => done.id === id);
+  doneUpdated.done = true;
+
+  return response.status(201).json(doneUpdated);
 });
 
 app.delete("/todos/:id", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { usernameExists } = request;
+  const { id } = request.params;
+
+  const todoDeleted = usernameExists.todos.findIndex((todo) => todo.id === id);
+
+  if (!todoDeleted) {
+    return response.status(404).json({ message: "Todo not found" });
+  }
+
+  usernameExists.todos.splice(todoDeleted, 1);
+
+  return response.status(201).json({ message: "Todo deleted" });
 });
 
 module.exports = app;
